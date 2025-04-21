@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GroupRepository extends MongoRepository<Group, String> {
-    // Tu peux ajouter des méthodes personnalisées ici si besoin
+    Group findByName(String name);
 }

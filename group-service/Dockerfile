@@ -1,14 +1,23 @@
-# Étape 1: Utiliser une image officielle de Java (OpenJDK 17)
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17.0.8-jdk-alpine
 
-# Étape 2: Définir le répertoire de travail dans le conteneur
+LABEL maintainer="Lonny"
+LABEL application="group-service"
+
+RUN addgroup -S spring && adduser -S spring -G spring
+
 WORKDIR /app
 
-# Étape 3: Copier le fichier JAR de l'application dans le conteneur
-COPY target/group-service-0.0.1-SNAPSHOT.jar /app/group-service.jar
+COPY target/*.jar app.jar
 
-# Étape 4: Exposer le port 8080 pour l'application
-EXPOSE 8080
+RUN chown spring:spring /app/app.jar
 
-# Étape 5: Commande pour démarrer l'application Spring Boot
-ENTRYPOINT ["java", "-jar", "group-service.jar"]
+USER spring
+
+EXPOSE 8081
+
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD wget -q --spider http://localhost:8081/actuator/health || exit 1
+
+ENV JAVA_OPTS="-Xmx512m -Xms256m"
+
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app/app.jar"]
