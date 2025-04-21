@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestionnaire de Tâches</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .group-form, .task-form { margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; }
+        .task-item { display: flex; justify-content: space-between; align-items: center; 
+                    padding: 10px; margin: 5px 0; border: 1px solid #eee; }
+        .completed { background-color: #e8ffe8; text-decoration: line-through; }
+        button { padding: 5px 10px; margin: 0 5px; }
+        input, select { padding: 5px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestionnaire de Tâches</h1>
+        
+        <div class="group-form">
+            <h2>Créer un Groupe</h2>
+            <input type="text" id="groupName" placeholder="Nom du groupe">
+            <input type="text" id="groupDescription" placeholder="Description">
+            <button onclick="createGroup()">Créer</button>
+        </div>
+
+        <div class="task-form">
+            <h2>Gérer les Tâches</h2>
+            <select id="groupSelect" onchange="loadTasks()">
+                <option value="">Sélectionnez un groupe</option>
+            </select>
+            
+            <div id="taskInput" style="margin-top: 10px;">
+                <input type="text" id="taskDescription" placeholder="Nouvelle tâche">
+                <button onclick="addTask()">Ajouter</button>
+            </div>
+        </div>
+
+        <div id="taskList"></div>
+    </div>
+
+    <script>
+        let currentGroupId = null;
+
+        // Charger les groupes au démarrage
+        window.onload = loadGroups;
+
+        function loadGroups() {
+            fetch('/api/groups')
+                .then(response => response.json())
+                .then(groups => {
+                    const select = document.getElementById('groupSelect');
+                    select.innerHTML = '<option value="">Sélectionnez un groupe</option>';
+                    groups.forEach(group => {
+                        select.innerHTML += `<option value="${group.id}">${group.name}</option>`;
+                    });
+                });
+        }
+
+        function createGroup() {
+            const name = document.getElementById('groupName').value;
+            const description = document.getElementById('groupDescription').value;
+            
+            fetch('/api/groups', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, description})
+            })
+            .then(response => response.json())
+            .then(() => {
+                loadGroups();
+                document.getElementById('groupName').value = '';
+                document.getElementById('groupDescription').value = '';
+            });
+        }
+
+        function loadTasks() {
+            currentGroupId = document.getElementById('groupSelect').value;
+            if (!currentGroupId) return;
+
+            fetch(`/api/groups/${currentGroupId}/tasks`)
+                .then(response => response.json())
+                .then(tasks => {
+                    const taskList = document.getElementById('taskList');
+                    taskList.innerHTML = '';
+                    tasks.forEach(task => {
+                        const taskElement = document.createElement('div');
+                        taskElement.className = `task-item ${task.completed ? 'completed' : ''}`;
+                        taskElement.innerHTML = `
+                            <span>${task.description}</span>
+                            <div>
+                                <button onclick="completeTask('${task.id}')" 
+                                        ${task.completed ? 'disabled' : ''}>
+                                    ${task.completed ? 'Terminée' : 'Terminer'}
+                                </button>
+                                <button onclick="deleteTask('${task.id}')">Supprimer</button>
+                            </div>
+                        `;
+                        taskList.appendChild(taskElement);
+                    });
+                });
+        }
+
+        function addTask() {
+            if (!currentGroupId) {
+                alert('Veuillez sélectionner un groupe');
+                return;
+            }
+            const description = document.getElementById('taskDescription').value;
+            if (!description) {
+                alert('Veuillez entrer une description');
+                return;
+            }
+            
+            fetch(`/api/groups/${currentGroupId}/tasks`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({description, completed: false})
+            })
+            .then(response => response.json())
+            .then(() => {
+                loadTasks();
+                document.getElementById('taskDescription').value = '';
+            });
+        }
+
+        function completeTask(taskId) {
+            fetch(`/api/groups/${currentGroupId}/tasks/${taskId}/complete`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(() => loadTasks());
+        }
+
+        function deleteTask(taskId) {
+            if (confirm('Voulez-vous vraiment supprimer cette tâche ?')) {
+                fetch(`/api/groups/${currentGroupId}/tasks/${taskId}`, {
+                    method: 'DELETE'
+                })
+                .then(() => loadTasks());
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+com\example\groupservice\GroupServiceApplication.class
+com\example\groupservice\model\Group.class
+com\example\groupservice\controller\GroupController.class
+com\example\groupservice\repository\GroupRepository.class
+com\example\groupservice\service\GroupService.class
