@@ -139,6 +139,3 @@ cd group-service
 4. Pousser vers la branche
 5. Créer une nouvelle Pull Request
 
-## Licence
-
-Ce projet est sous licence MIT.
