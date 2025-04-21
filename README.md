@@ -21,6 +21,20 @@ Une application de gestion de tâches basée sur les microservices, construite a
 - Docker
 - Kubernetes (Minikube pour le développement local)
 - MongoDB
+## Notre Appli
+Quand on la lance nous pouvont voir une interface permettant de gerer des taches , nous pouvons créer un groupe , lui donnée une description 
+![image](https://github.com/user-attachments/assets/07c7f832-506b-4497-bd6a-948143004aaf)
+ensuite nous pouvons selectionnez un groupe existant en cliquant dessus.
+![image](https://github.com/user-attachments/assets/4c134afc-cfa3-4076-8fd9-59e31e7c49f2)
+Une fois le groupe choisis on peut ajouter une tache à faire pour le groupe.
+![image](https://github.com/user-attachments/assets/348bed0b-d814-416d-98ae-43c21698b6a9)
+Quand on crée la tache deux choix s'offrent à nous soit dire que cette tache est finit  soit la supprimer. Si on clique sur terminer alors la tache est barrée.
+![image](https://github.com/user-attachments/assets/9d137806-32d5-497f-b844-debeefe6052c)
+Si on clique sur le bouton supprimé une pop up s'ouvre et si on mets ok alors la tache est supprimé deffinitivement
+![image](https://github.com/user-attachments/assets/7863ef17-27a9-4ec7-b640-5421d2ac7b39)
+
+
+
 
 ## Démarrage Rapide
 
@@ -139,3 +153,4 @@ cd group-service
 4. Pousser vers la branche
 5. Créer une nouvelle Pull Request
 
+Veuillez nous excuser d'avoir remis le devoir en retard Nous sommes désolé
