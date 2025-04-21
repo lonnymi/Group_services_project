@@ -21,7 +21,7 @@ Une application de gestion de tâches basée sur les microservices, construite a
 - Docker
 - Kubernetes (Minikube pour le développement local)
 - MongoDB
-## Notre Appli
+## GUIDE/Notre Appli
 Quand on la lance nous pouvont voir une interface permettant de gerer des taches , nous pouvons créer un groupe , lui donnée une description 
 ![image](https://github.com/user-attachments/assets/07c7f832-506b-4497-bd6a-948143004aaf)
 ensuite nous pouvons selectionnez un groupe existant en cliquant dessus.
