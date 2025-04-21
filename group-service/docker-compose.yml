@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    ports:
+      - "27017:27017"
+    networks:
+      - todogroup-network
+
+  app:
+    build: .
+    container_name: group-service
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:admin@mongo:27017/todogroup
+    networks:
+      - todogroup-network
+
+networks:
+  todogroup-network:
+    driver: bridge
